@@ -9,3 +9,6 @@ How it works:
     - View My Attendance – Retrieves monthly attendance records. The system prompts employees to select a month before displaying the data.
     - View My Payslip - Retrieves monthly pay records. The system prompts employees to select a month before displaying the data.
     - Admin Tools - Allow admin users to perform advanced system functions e.g. searching and update employee information, retrieving an employee's payslip information, and approving payroll.
+
+Other Notes:
+- I've utilized two types of data sources: Hashmap for Employee Data and a CSV file for Attendance to try two different methods of accessing and retrieving data in Java.
