@@ -588,14 +588,17 @@ public class PayrollSystem {
 
         public static void main(String[] args) {
                 
+                int userEmployeeID = 0;
                 System.out.println("Welcome to MotorPH APS!");
-                System.out.println("Enter your Employee ID: ");
+                while (userEmployeeID == 0 || !employeeMap.containsKey(userEmployeeID)) {
+                        System.out.println("Enter your Employee ID: ");
+                        userEmployeeID = Integer.parseInt(promptScanner.nextLine());
+                        if (!employeeMap.containsKey(userEmployeeID)) {
+                                System.out.println("Invalid. Please try again");
+                        }
                         
-                int userEmployeeID = Integer.parseInt(promptScanner.nextLine());
-
+                }      
                 while(employeeMap.containsKey(userEmployeeID)) {
-                        
-
                         PayrollSystem employeeDetails = employeeMap.get(userEmployeeID);
 
                         System.out.println("\nWelcome " + employeeDetails.firstName + " " + employeeDetails.lastName + "!");
@@ -605,7 +608,7 @@ public class PayrollSystem {
                                         
                         String userPromptActivity = "";
                                         
-                                        while (!userPromptActivity.equalsIgnoreCase("E")) {
+                                        while (!userPromptActivity.equalsIgnoreCase("F")) {
                                                 System.out.println("\nWhat would you like to do?");
                                                 System.out.println("A. Punch Clock | B. View my profile | C. View my attendance | D. View my payslip | E. Admin Tools | F. Logout");
                                                 
@@ -792,8 +795,6 @@ public class PayrollSystem {
                                         }
                         break;
                 }
-                if (!employeeMap.containsKey(userEmployeeID)) {
-                        System.out.println("Employee ID is invalid. Please contact your administrator at motorph@technology.com");
+                
                 }
-        }
 }
