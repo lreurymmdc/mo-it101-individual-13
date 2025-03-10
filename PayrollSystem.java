@@ -15,15 +15,14 @@ public class PayrollSystem {
         static LocalDate dateNow = LocalDate.now();
         static LocalTime timeNow = LocalTime.now();
         
+//EMPLOYEE DATA
+
         // Employee - Data attributes
         private int employeeID, basicSalary, riceSubsidy, phoneAllowance, clothingAllowance;
         private String lastName, firstName, birthday, address, phoneNumber, sssNumber, philhealthNumber, tinNumber,
                         pagibigNumber, status, position, immediateSupervisor;
         private double hourlyRate;
-
-        // Employee - Database (using hashmap)
-        static Map<Integer, PayrollSystem> employeeMap = new HashMap<>();
-
+        
         // Employee - Data Constructor
         public PayrollSystem(int employeeID, String lastName, String firstName, String birthday, String address,
                         String phoneNumber, String sssNumber, String philhealthNumber, String tinNumber,
@@ -49,6 +48,9 @@ public class PayrollSystem {
                 this.clothingAllowance = clothingAllowance;
                 this.hourlyRate = hourlyRate;
         };
+        
+        // Employee - Database (using hashmap)
+        static Map<Integer, PayrollSystem> employeeMap = new HashMap<>();
 
         // Employee - Sample Dataset
         static {
@@ -257,6 +259,8 @@ public class PayrollSystem {
                 employees.forEach(PayrollSystem::addToEmployeeMap);
         }
 
+//ATTENDANCE DATA AND DATA FORMATTING
+
         //Attendance variables
         static int totalLateMinutes = 0;
         static int totalOvertimeMinutes = 0;
@@ -272,40 +276,42 @@ public class PayrollSystem {
         static LocalTime gracePeriodEndTime = LocalTime.of(8, 10);
         static LocalTime standardLogOutTime = LocalTime.of(17, 0);
 
-        // Methods below:
+//PAYROLL SYSTEM METHODS
 
-        // Method to push employee dataset to the HashMap
+        //Method to push the each employee information to the HashMap.
         static void addToEmployeeMap(PayrollSystem employee) {
                 employeeMap.put(employee.employeeID, employee);
         };
 
-        // Method to display employee details
-        public void viewEmployeeData() {
-                System.out.println("\n===== Employee Information =====");
-                System.out.println("ID: " + employeeID);
-                System.out.println("Name: " + firstName + " " + lastName);
-                System.out.println("Address: " + address);
-                System.out.println("Birthday: " + birthday);
-                System.out.println("Phone: " + phoneNumber);
-                System.out.println("SSS: " + sssNumber);
-                System.out.println("Philhealth: " + philhealthNumber);
-                System.out.println("TIN: " + tinNumber);
-                System.out.println("Pag-IBIG: " + pagibigNumber);
-                System.out.println("Status: " + status);
-                System.out.println("Position: " + position);
-                System.out.println("Supervisor: " + immediateSupervisor);
-                System.out.println("\n===== Compensation Details =====");
-                System.out.println("Basic Salary: P " + basicSalary);
-                System.out.println("Rice Subsidy: P " + riceSubsidy);
-                System.out.println("Phone Allowance: P " + phoneAllowance);
-                System.out.println("Clothing Allowance: P " + clothingAllowance);
-                System.out.println("Gross Semi-Monthly Rate: P " + (basicSalary / 2));
-                System.out.println("Hourly Rate: P " + String.format("%.2f", hourlyRate));
-                
-        }
+        //DISPLAY METHODS
 
-        // Method to dsiplay Payslip details
-        static void viewPayslip(int userId) {
+                // Method to display employee details
+                public void viewEmployeeData() {
+                        System.out.println("\n===== Employee Information =====");
+                        System.out.println("ID: " + employeeID);
+                        System.out.println("Name: " + firstName + " " + lastName);
+                        System.out.println("Address: " + address);
+                        System.out.println("Birthday: " + birthday);
+                        System.out.println("Phone: " + phoneNumber);
+                        System.out.println("SSS: " + sssNumber);
+                        System.out.println("Philhealth: " + philhealthNumber);
+                        System.out.println("TIN: " + tinNumber);
+                        System.out.println("Pag-IBIG: " + pagibigNumber);
+                        System.out.println("Status: " + status);
+                        System.out.println("Position: " + position);
+                        System.out.println("Supervisor: " + immediateSupervisor);
+                        System.out.println("\n===== Compensation Details =====");
+                        System.out.println("Basic Salary: P " + basicSalary);
+                        System.out.println("Rice Subsidy: P " + riceSubsidy);
+                        System.out.println("Phone Allowance: P " + phoneAllowance);
+                        System.out.println("Clothing Allowance: P " + clothingAllowance);
+                        System.out.println("Gross Semi-Monthly Rate: P " + (basicSalary / 2));
+                        System.out.println("Hourly Rate: P " + String.format("%.2f", hourlyRate));
+                        
+                }
+
+                // Method to dsiplay payslip details
+                static void viewPayslip(int userId) {
 
                 PayrollSystem employee = employeeMap.get(userId);
 
@@ -342,199 +348,205 @@ public class PayrollSystem {
                 System.out.println("\nTotal Deductions: P" + totalDeductions(userId) +"\n" );
                 
 
-                System.out.println("Net Pay: P" + (totalCompensation(userId) - totalDeductions(userId)) + "\n");
+                System.out.println("Net Pay: P" + new BigDecimal((totalCompensation(userId) - totalDeductions(userId))).setScale(2, RoundingMode.HALF_UP).doubleValue() + "\n");
         };
 
-        //Method to calculate total deductions 
-        static double totalDeductions(int userId) {
-                PayrollSystem employee = employeeMap.get(userId);
-                return lateMinutesDeduction(userId) + sssDeduction(userId) + pagIbigDeduction(userId) + taxDeduction(userId) + employee.basicSalary * 0.03;
-        }
-        
-        //Method to calculate late minutes
-        static double lateMinutesDeduction(int userid) {
-                PayrollSystem employee = employeeMap.get(userid);
-                
-                double hourlyPay = employee.hourlyRate;
-                double lateTimeCalc = (totalLateMinutes / 60) * hourlyPay;
-                return new BigDecimal(lateTimeCalc).setScale(2,RoundingMode.HALF_UP).doubleValue();
-        };
-        
-        //Method to calculate late minutes
-        static double overMinutesAddition(int userid) {
-                PayrollSystem employee = employeeMap.get(userid);
-                
-                double hourlyPay = employee.hourlyRate;
-                double overTimeCalc = (totalOvertimeMinutes / 60) * hourlyPay;
-                return new BigDecimal(overTimeCalc).setScale(2,RoundingMode.HALF_UP).doubleValue();
-        };
-        
-        //Method to calculate Tax 
-        static double taxDeduction(int userId) {
-
-                double salary = taxableCompensation(userId);
-
-                if (salary > 20832 && salary < 33333) {
-                        return (salary - 20832)*0.20;
-                }
-                else if (salary > 33333 && salary < 66667) {
-                        return 2500 + (salary - 33333)*0.25;
-                }
-                else if (salary > 66667 && salary < 166667) {
-                        return 10833 + (salary - 66667)*0.30;
-                }
-                else if (salary > 166667 && salary < 666667) {
-                        return 40833.33 + (salary - 166667)*0.32;
-                }
-                else if (salary >= 666667) {
-                        return 200833.33 + (salary - 666667)*0.35;
-                }
-                else {
-                        return 0.0;
-                }          
-        }        
-        
-        //Method to calculate SSS contribution 
-        static double sssDeduction(int userId) {
-                
-                PayrollSystem employee = employeeMap.get(userId);
-        int[] sssContributionMin = {3250, 3750, 4250, 4750, 5250, 5750, 6250, 6750, 7250, 7750, 8250, 8750, 9250, 9750, 10250, 10750, 11250, 11750, 12250, 12750, 13250, 13750, 14250, 14750, 15250, 15750, 16250, 16750, 17250, 17750, 18250, 18750, 19250, 19750, 20250, 20750, 21250, 21750, 22250, 22750, 23250, 23750, 24250};
-        int[] sssContributionMax = {3750, 4250, 4750, 5250, 5750, 6250, 6750, 7250, 7750, 8250, 8750, 9250, 9750, 10250, 10750, 11250, 11750, 12250, 12750, 13250, 13750, 14250, 14750, 15250, 15750, 16250, 16750, 17250, 17750, 18250, 18750, 19250, 19750, 20250, 20750, 21250, 21750, 22250, 22750, 23250, 23750, 24250, 24750};
-        double[] sssContributionValue = {157.50, 180.00, 202.50, 225.00, 247.50, 270.00, 292.50, 315.00, 337.50, 360.00, 382.50, 405.00, 427.50, 450.00, 472.50, 495.00, 517.50, 540.00, 562.50, 585.00, 607.50, 630.00, 652.50, 675.00, 697.50, 720.00, 742.50, 765.00, 787.50, 810.00, 832.50, 855.00, 877.50, 900.00, 922.50, 945.00, 967.50, 990.00, 1012.50, 1035.00, 1057.50, 1080.00, 1102.50};
-
-        double salary = employee.basicSalary;
-                if (salary < sssContributionMin[0]) {
-                        return 135.00;
-                }
-                else if (salary > sssContributionMax[sssContributionMax.length - 1]) {
-                        return 1125.00;
-                }
-                else {
-                        for (int i = 0; i < sssContributionMin.length; i++) {
-                                if (salary >= sssContributionMin[i] && salary <= sssContributionMax[i]) {
-                                        return sssContributionValue[i];
-                                }
-                        }
-                }
-
-       return 0.0;
-        };
-        
-        //Method to calculate Pagibig contribution
-        static double pagIbigDeduction(int userId) {
-                
-                PayrollSystem employee = employeeMap.get(userId);
-
-                double pagIbigContribution;
-    
-                if (employee.basicSalary >= 1000 && employee.basicSalary <= 1500) {
-                    pagIbigContribution = employee.basicSalary * 0.01;
-                } else if (employee.basicSalary > 1500) {
-                    pagIbigContribution = employee.basicSalary * 0.02;
-                } else {
-                    pagIbigContribution = 0.0; // In case salary is below 1000
-                }
-            
-                return pagIbigContribution;
-        };
-
-        // Method to calculate total compensation
-        static double totalCompensation(int userId) {
-                PayrollSystem employee = employeeMap.get(userId);
-                
-                int allowanceSum = employee.riceSubsidy + employee.phoneAllowance + employee.clothingAllowance;
-                
-                return employee.basicSalary + allowanceSum + (totalOvertimeMinutes / 60) * employee.hourlyRate;
-        }
-
-        // Method to calculate taxable compensation
-        static double taxableCompensation(int userId) {
-                PayrollSystem employee = employeeMap.get(userId);
-
-                double govtDeductionSum = sssDeduction(userId) + pagIbigDeduction(userId) + employee.basicSalary*0.03;
-                
-                return ((employee.basicSalary + overMinutesAddition(userId)) - lateMinutesDeduction(userId))-govtDeductionSum;
-        }
-
-        // Method to calculate working hours
-        // Note: Working hours follows the standard Philippine working hours 8:00 to
-        // 5:00 with Lunch break not included in the working hours.
-        static void calculateWorkHours(String employeeID, String month) {
-
-                try (BufferedReader br = Files.newBufferedReader(Paths.get(attendanceFilePath))) {
-                        String line = br.readLine(); // Skip header
-                        while ((line = br.readLine()) != null) {
-                                String[] data = line.split(",");
-                                if (data.length < 6 || !data[0].trim().equals(employeeID))
-                                        continue;
-
-                                LocalDate date = LocalDate.parse(data[3].trim(), dateFormat);
-                                if (date.getMonthValue() != Integer.parseInt(month))
-                                        continue;
-
-                                LocalTime loginTime = LocalTime.parse(data[4].trim(), timeFormat);
-                                LocalTime logoutTime = LocalTime.parse(data[5].trim(), timeFormat);
-
-                                int dailyLateMinutes = loginTime.isAfter(gracePeriodEndTime)
-                                                ? (int) Duration.between(gracePeriodEndTime, loginTime).toMinutes()
-                                                : 0;
-                                int dailyWorkMinutes = (int) Duration.between(loginTime, logoutTime).toMinutes() - 60; // Deduct
-                                                                                                                       // 1-hour
-                                                                                                                       // lunch
-                                int dailyOvertimeMinutes = logoutTime.isAfter(standardLogOutTime)
-                                                ? (int) Duration.between(standardLogOutTime, logoutTime).toMinutes()
-                                                : 0;
-
-                                totalLateMinutes += dailyLateMinutes;
-                                totalWorkMinutes += dailyWorkMinutes - dailyLateMinutes;
-                                totalOvertimeMinutes += dailyOvertimeMinutes;
-                        }
-                } catch (IOException e) {
-                        System.out.println("Error reading file: " + e.getMessage());
-                }
-        };
-
-        //Method to view attendance
-        static void viewAttendance(int userId, String month, String employeeID) {
+                //Method to view attendance
+                static void viewAttendance(int userId, String month, String employeeID) {
                 PayrollSystem employee = employeeMap.get(userId);
                 calculateWorkHours(employeeID, month);
                 System.out.println("\nAttendance Summary for " + employee.firstName + " " + employee.lastName + "\n");
                 System.out.println("Total Working Hours: " + totalWorkMinutes / 60 + " hours " + totalWorkMinutes % 60 + " minutes");
                 System.out.println("Total Late Time: " + totalLateMinutes / 60 + " hours " + totalLateMinutes % 60 + " minutes");
                 System.out.println("Total Overtime: " + totalOvertimeMinutes / 60 + " hours " + totalOvertimeMinutes % 60 + " minutes");
-        }
-
-
-        //Admin tools methods
-
-        //Method to search an employee
-        static void searchEmployee(int userId) {
+                }
         
-                PayrollSystem employee = employeeMap.get(userId);
-                System.out.println("\n===== Employee Information =====");
-                System.out.println("ID: " + employee.employeeID);
-                System.out.println("Name: " + employee.firstName + " " + employee.lastName);
-                System.out.println("Address: " + employee.address);
-                System.out.println("Birthday: " + employee.birthday);
-                System.out.println("Phone: " + employee.phoneNumber);
-                System.out.println("SSS: " + employee.sssNumber);
-                System.out.println("Philhealth: " + employee.philhealthNumber);
-                System.out.println("TIN: " + employee.tinNumber);
-                System.out.println("Pag-IBIG: " + employee.pagibigNumber);
-                System.out.println("Status: " + employee.status);
-                System.out.println("Position: " + employee.position);
-                System.out.println("Supervisor: " + employee.immediateSupervisor);
-                System.out.println("\n===== Compensation Details =====");
-                System.out.println("Basic Salary: P " + employee.basicSalary);
-                System.out.println("Rice Subsidy: P " + employee.riceSubsidy);
-                System.out.println("Phone Allowance: P " + employee.phoneAllowance);
-                System.out.println("Clothing Allowance: P " + employee.clothingAllowance);
-                System.out.println("Gross Semi-Monthly Rate: P " + (employee.basicSalary / 2));
-                System.out.println("Hourly Rate: P " + String.format("%.2f", employee.hourlyRate));
-        };
+        //CALCULATION METHODS
 
-        //Method to update an employee
-        static void updateEmployee(int userId, int fieldNum, String newInfo) {
+                //Attendance-related calculations
+                
+                        // Method to calculate working hours || Note: Working hours follows the standard Philippine working hours 8:00 to 5:00 with Lunch break not included in the working hours.
+                        static void calculateWorkHours(String employeeID, String month) {
+
+                                try (BufferedReader br = Files.newBufferedReader(Paths.get(attendanceFilePath))) {
+                                        String line = br.readLine(); // Skip header
+                                        while ((line = br.readLine()) != null) {
+                                                String[] data = line.split(",");
+                                                if (data.length < 6 || !data[0].trim().equals(employeeID))
+                                                        continue;
+                
+                                                LocalDate date = LocalDate.parse(data[3].trim(), dateFormat);
+                                                if (date.getMonthValue() != Integer.parseInt(month))
+                                                        continue;
+                
+                                                LocalTime loginTime = LocalTime.parse(data[4].trim(), timeFormat);
+                                                LocalTime logoutTime = LocalTime.parse(data[5].trim(), timeFormat);
+                
+                                                int dailyLateMinutes = loginTime.isAfter(gracePeriodEndTime)
+                                                                ? (int) Duration.between(gracePeriodEndTime, loginTime).toMinutes()
+                                                                : 0;
+                                                int dailyWorkMinutes = (int) Duration.between(loginTime, logoutTime).toMinutes() - 60; // Deduct
+                                                                                                                                // 1-hour
+                                                                                                                                // lunch
+                                                int dailyOvertimeMinutes = logoutTime.isAfter(standardLogOutTime)
+                                                                ? (int) Duration.between(standardLogOutTime, logoutTime).toMinutes()
+                                                                : 0;
+                
+                                                totalLateMinutes += dailyLateMinutes;
+                                                totalWorkMinutes += dailyWorkMinutes - dailyLateMinutes;
+                                                totalOvertimeMinutes += dailyOvertimeMinutes;
+                                        }
+                                } catch (IOException e) {
+                                        System.out.println("Error reading file: " + e.getMessage());
+                                }
+                                };
+                        
+                        //Method to calculate late minutes deduction
+                        static double lateMinutesDeduction(int userid) {
+                                PayrollSystem employee = employeeMap.get(userid);
+                                
+                                double hourlyPay = employee.hourlyRate;
+                                double lateTimeCalc = (totalLateMinutes / 60) * hourlyPay;
+                                return new BigDecimal(lateTimeCalc).setScale(2,RoundingMode.HALF_UP).doubleValue();
+                        };
+                        
+                        //Method to calculate overtime minutes additions
+                        static double overMinutesAddition(int userid) {
+                        PayrollSystem employee = employeeMap.get(userid);
+                        
+                        double hourlyPay = employee.hourlyRate;
+                        double overTimeCalc = (totalOvertimeMinutes / 60) * hourlyPay;
+                        return new BigDecimal(overTimeCalc).setScale(2,RoundingMode.HALF_UP).doubleValue();
+                };
+                
+                //Deductions calculations
+
+                        //Method to calculate Tax 
+                        static double taxDeduction(int userId) {
+
+                                double salary = taxableCompensation(userId);
+
+                                if (salary > 20832 && salary < 33333) {
+                                        return (salary - 20832)*0.20;
+                                }
+                                else if (salary > 33333 && salary < 66667) {
+                                        return 2500 + (salary - 33333)*0.25;
+                                }
+                                else if (salary > 66667 && salary < 166667) {
+                                        return 10833 + (salary - 66667)*0.30;
+                                }
+                                else if (salary > 166667 && salary < 666667) {
+                                        return 40833.33 + (salary - 166667)*0.32;
+                                }
+                                else if (salary >= 666667) {
+                                        return 200833.33 + (salary - 666667)*0.35;
+                                }
+                                else {
+                                        return 0.0;
+                                }          
+                        }        
+                        
+                        //Method to calculate SSS contribution 
+                        static double sssDeduction(int userId) {
+                                
+                                PayrollSystem employee = employeeMap.get(userId);
+                        int[] sssContributionMin = {3250, 3750, 4250, 4750, 5250, 5750, 6250, 6750, 7250, 7750, 8250, 8750, 9250, 9750, 10250, 10750, 11250, 11750, 12250, 12750, 13250, 13750, 14250, 14750, 15250, 15750, 16250, 16750, 17250, 17750, 18250, 18750, 19250, 19750, 20250, 20750, 21250, 21750, 22250, 22750, 23250, 23750, 24250};
+                        int[] sssContributionMax = {3750, 4250, 4750, 5250, 5750, 6250, 6750, 7250, 7750, 8250, 8750, 9250, 9750, 10250, 10750, 11250, 11750, 12250, 12750, 13250, 13750, 14250, 14750, 15250, 15750, 16250, 16750, 17250, 17750, 18250, 18750, 19250, 19750, 20250, 20750, 21250, 21750, 22250, 22750, 23250, 23750, 24250, 24750};
+                        double[] sssContributionValue = {157.50, 180.00, 202.50, 225.00, 247.50, 270.00, 292.50, 315.00, 337.50, 360.00, 382.50, 405.00, 427.50, 450.00, 472.50, 495.00, 517.50, 540.00, 562.50, 585.00, 607.50, 630.00, 652.50, 675.00, 697.50, 720.00, 742.50, 765.00, 787.50, 810.00, 832.50, 855.00, 877.50, 900.00, 922.50, 945.00, 967.50, 990.00, 1012.50, 1035.00, 1057.50, 1080.00, 1102.50};
+
+                        double salary = employee.basicSalary;
+                                if (salary < sssContributionMin[0]) {
+                                        return 135.00;
+                                }
+                                else if (salary > sssContributionMax[sssContributionMax.length - 1]) {
+                                        return 1125.00;
+                                }
+                                else {
+                                        for (int i = 0; i < sssContributionMin.length; i++) {
+                                                if (salary >= sssContributionMin[i] && salary <= sssContributionMax[i]) {
+                                                        return sssContributionValue[i];
+                                                }
+                                        }
+                                }
+
+                return 0.0;
+                        };
+                        
+                        //Method to calculate Pagibig contribution
+                        static double pagIbigDeduction(int userId) {
+                        
+                        PayrollSystem employee = employeeMap.get(userId);
+
+                        double pagIbigContribution;
+        
+                        if (employee.basicSalary >= 1000 && employee.basicSalary <= 1500) {
+                        pagIbigContribution = employee.basicSalary * 0.01;
+                        } else if (employee.basicSalary > 1500) {
+                        pagIbigContribution = employee.basicSalary * 0.02;
+                        } else {
+                        pagIbigContribution = 0.0; // In case salary is below 1000
+                        }
+                
+                        return pagIbigContribution;
+                };
+
+                //Aggregations
+
+                        // Method to calculate total compensation
+                        static double totalCompensation(int userId) {
+                                PayrollSystem employee = employeeMap.get(userId);
+                                
+                                int allowanceSum = employee.riceSubsidy + employee.phoneAllowance + employee.clothingAllowance;
+                                
+                                return employee.basicSalary + allowanceSum + (totalOvertimeMinutes / 60) * employee.hourlyRate;
+                        }
+
+                        // Method to calculate taxable compensation
+                        static double taxableCompensation(int userId) {
+                        PayrollSystem employee = employeeMap.get(userId);
+
+                        double govtDeductionSum = sssDeduction(userId) + pagIbigDeduction(userId) + employee.basicSalary*0.03;
+                        
+                        return ((employee.basicSalary + overMinutesAddition(userId)) - lateMinutesDeduction(userId))-govtDeductionSum;
+                }
+
+                        //Method to calculate total deductions 
+                        static double totalDeductions(int userId) {
+                        PayrollSystem employee = employeeMap.get(userId);
+                        double rawTotalDeductions = lateMinutesDeduction(userId) + sssDeduction(userId) + pagIbigDeduction(userId) + taxDeduction(userId) + employee.basicSalary * 0.03;
+                        return new BigDecimal(rawTotalDeductions).setScale(2, RoundingMode.HALF_UP).doubleValue();
+                }
+
+        //ADMIN FEATURES
+
+                //Method to search an employee
+                static void searchEmployee(int userId) {
+                
+                        PayrollSystem employee = employeeMap.get(userId);
+                        System.out.println("\n===== Employee Information =====");
+                        System.out.println("ID: " + employee.employeeID);
+                        System.out.println("Name: " + employee.firstName + " " + employee.lastName);
+                        System.out.println("Address: " + employee.address);
+                        System.out.println("Birthday: " + employee.birthday);
+                        System.out.println("Phone: " + employee.phoneNumber);
+                        System.out.println("SSS: " + employee.sssNumber);
+                        System.out.println("Philhealth: " + employee.philhealthNumber);
+                        System.out.println("TIN: " + employee.tinNumber);
+                        System.out.println("Pag-IBIG: " + employee.pagibigNumber);
+                        System.out.println("Status: " + employee.status);
+                        System.out.println("Position: " + employee.position);
+                        System.out.println("Supervisor: " + employee.immediateSupervisor);
+                        System.out.println("\n===== Compensation Details =====");
+                        System.out.println("Basic Salary: P " + employee.basicSalary);
+                        System.out.println("Rice Subsidy: P " + employee.riceSubsidy);
+                        System.out.println("Phone Allowance: P " + employee.phoneAllowance);
+                        System.out.println("Clothing Allowance: P " + employee.clothingAllowance);
+                        System.out.println("Gross Semi-Monthly Rate: P " + (employee.basicSalary / 2));
+                        System.out.println("Hourly Rate: P " + String.format("%.2f", employee.hourlyRate));
+                };
+
+                //Method to update an employee
+                static void updateEmployee(int userId, int fieldNum, String newInfo) {
                 PayrollSystem employee = employeeMap.get(userId);
 
                 switch (fieldNum) {
@@ -590,6 +602,9 @@ public class PayrollSystem {
                 
                 int userEmployeeID = 0;
                 System.out.println("Welcome to MotorPH APS!");
+
+                //Login page: This is a loop to keep the system continuously prompting user until it provides a valid employee ID.
+
                 while (userEmployeeID == 0 || !employeeMap.containsKey(userEmployeeID)) {
                         System.out.println("Enter your Employee ID: ");
                         userEmployeeID = Integer.parseInt(promptScanner.nextLine());
@@ -598,23 +613,31 @@ public class PayrollSystem {
                         }
                         
                 }      
-                while(employeeMap.containsKey(userEmployeeID)) {
+
+                //Post-login: A condition, if the employee ID is valid - the system will run the payroll system. 
+
+                if(employeeMap.containsKey(userEmployeeID)) {
                         PayrollSystem employeeDetails = employeeMap.get(userEmployeeID);
+                        String userPromptActivity = "";
+
+                        //Text-display: Greeting message for the successful users. 
 
                         System.out.println("\nWelcome " + employeeDetails.firstName + " " + employeeDetails.lastName + "!");
                         System.out.println("Employee #" + employeeDetails.employeeID);
-
                         System.out.println("\nToday is " + dateNow +" "+ timeNow.format(timeFormat));
                                         
-                        String userPromptActivity = "";
-                                        
+                                        //System features: Loop to keep the system prompting users to select specific actions in the system until they opt to logout.
+
                                         while (!userPromptActivity.equalsIgnoreCase("F")) {
                                                 System.out.println("\nWhat would you like to do?");
                                                 System.out.println("A. Punch Clock | B. View my profile | C. View my attendance | D. View my payslip | E. Admin Tools | F. Logout");
                                                 
                                                 userPromptActivity = promptScanner.nextLine().trim().toUpperCase();
                                 
+                                                //System decision making.
                                                 switch (userPromptActivity.trim().toUpperCase()) {
+                                                
+                                                //User wants to log their attendance.
                                                 case "A":
                                                         System.out.println("A. Clock-in or B. Clock-out? ");
                                                         userPromptActivity = promptScanner.nextLine();
@@ -631,10 +654,13 @@ public class PayrollSystem {
                                                                         break;
                                                         }
                                                         break;
+                                                
+                                                //User wants to view their profile
                                                 case "B":
                                                         employeeDetails.viewEmployeeData();
                                                         break;  
-                                
+                                                
+                                                //User wants to view their attendance
                                                 case "C":
                                                         System.out.println("\n==== Attendance data available from June 2024 to December 2024 ====\n");
                                                         System.out.println("Select the month for your attendance (Input corresponding number):\n");
@@ -653,6 +679,7 @@ public class PayrollSystem {
 
                                                         break;
                                 
+                                                //User wants to view their payslip
                                                 case "D":
                                                         System.out.println("\n==== Payslip data available from June 2024 to December 2024 ====\n");
                                                         System.out.println("Select the month for your payslip (Input corresponding number):\n");
@@ -668,15 +695,22 @@ public class PayrollSystem {
                                                         calculateWorkHours(convertLogInEmployeeIdToStringPayslip, selectedMonthPayslip);
                                                         viewPayslip(userEmployeeID);
                                                         break;
+                                                
+                                                //User is an admin and would like to do admin specific features.     
                                                 case "E": 
                                                         System.out.println("\nMotorPH APS Admin Tools");
                                                         String userPrompt = "";
+
+                                                        //Admin tools: Loop to keep the system continuously prompt user until they opt to Exit.
                                                         while (!userPrompt.equalsIgnoreCase("E")) {
                                                                 
                                                                 System.out.println("\nA. Search Employee Information\nB. Update Employee Information\nC. Search Employee Payslip\nD. Sync and Approve Employee Payroll\nE. Exit");
                                                                 userPrompt = promptScanner.nextLine();
 
+                                                                //Payroll system decision making for Admin tools.
                                                                 switch (userPrompt.trim().toUpperCase()) {
+                                                                        
+                                                                        //Admin wants to search an employee
                                                                         case "A":
                                                                                 boolean searchIDValidator = false;
                                                                                 int searchEmployeeByID = 0;
@@ -694,7 +728,8 @@ public class PayrollSystem {
                                                                                 }
                                                                                 searchEmployee(searchEmployeeByID);
                                                                                 break;
-
+                                                                        
+                                                                        //Admin wants to update an employee information
                                                                         case "B":
                                                                                 System.out.println("Enter Employee ID to update: \n");
                                                                                 int updateEmployeeByID = promptScanner.nextInt();
@@ -734,6 +769,8 @@ public class PayrollSystem {
                                                                                 }
                                                                             
                                                                                 break;
+                                                                        
+                                                                        //Admin wants to view an employee's payslip information
                                                                         case "C":
                                                                                 System.out.println("Enter Employee ID: ");
                                                                                 int userIDToViewPayslip = promptScanner.nextInt();
@@ -746,6 +783,8 @@ public class PayrollSystem {
                                                                                         promptScanner.nextLine();
                                                                                 }
                                                                                 break;
+
+                                                                        //Admin wants to sync payroll and approve all pending payroll for the cycle. 
                                                                         case "D":
                                                                                 System.out.println("DO YOU WISH TO SYNC AND APPROVE EMPLOYEE PAYROLL? Yes or No?");
                                                                                 String userprompt = promptScanner.nextLine().trim();
@@ -793,7 +832,6 @@ public class PayrollSystem {
                                                         System.out.println("Invalid input. Please try again.");
                                                 }
                                         }
-                        break;
                 }
                 
                 }
