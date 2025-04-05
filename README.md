@@ -9,5 +9,6 @@ How it works:
     - View Attendance – Retrieves weekly attendance records. The system prompts employees to select a starting date and an end date before displaying the data.
     - View Payslip - Retrieves weekly pay records. The system prompts employees to select a starting date and an end date before displaying the data.
       
-Other Notes:
-- I've utilized two types of data sources: Hashmap for Employee Data and a CSV file for Attendance to try two different methods of accessing and retrieving data in Java.
+Updates:
+- Revised code calculation to compute weekly payroll information.
+- added Payslip.java and Display.java to better organize and reduce code cluttering in the Main.java file. 
