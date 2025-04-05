@@ -2,9 +2,12 @@ import model.Employee;
 import data.EmployeeDatabase;
 import service.AttendanceConfig;
 import service.PayrollConfig;
+import util.DisplayView;
+import util.TimeVariablesFormat;
 
 import java.time.*;
 import java.util.*;
+import java.time.temporal.ChronoUnit;
 
 public class Main {
     static Scanner scanner = new Scanner(System.in);
@@ -19,70 +22,66 @@ public class Main {
 
         while (!choice.equalsIgnoreCase("F")) {
             System.out.println("\nWhat would you like to do?");
-            System.out.println("A. Punch Clock | B. View Profile | C. View Attendance | D. View Payslip | F. Logout");
+            System.out.println("A. Punch Clock | B. View Profile | C. View Attendance (Weekly) | D. View Payslip (Weekly) | F. Logout");
             choice = scanner.nextLine().trim().toUpperCase();
 
             switch (choice) {
-                case "A":
+                case "A": //Punch clock feature
                     System.out.println("Clock-in or Clock-out? (A/B):");
                     String clockChoice = scanner.nextLine().trim().toUpperCase();
                     System.out.println("You have successfully "
                             + (clockChoice.equals("A") ? "clocked-in" : "clocked-out") + " at " + timeNow);
                     break;
-                case "B":
-                    emp.viewEmployeeData();
+                case "B": //Viewing employee information
+                    DisplayView attendanceView = new DisplayView(emp);
+                    attendanceView.viewEmployeeData();
                     break;
-                case "C":
+                case "C": //Viewing weekly attendance
                     System.out.println(
-                            "Data is available from June (6) to December (12). Please enter a month number between 6 and 12:");
-                    String month = scanner.nextLine();
-                    AttendanceConfig.calculateWorkHours(String.valueOf(userID), month);
-                    System.out.println("Total Hours: " + AttendanceConfig.totalWorkMinutes / 60);
-                    System.out.println("Late: " + AttendanceConfig.totalLateMinutes + " mins");
-                    System.out.println("Overtime: " + AttendanceConfig.totalOvertimeMinutes + " mins");
-                    break;
-                case "D":
+                            "Enter start date: (MM/DD/YYYY)");
+                    String attendanceStartDate = scanner.nextLine();
                     System.out.println(
-                            "Data is available from June (6) to December (12). Please enter a month number between 6 and 12:");
-                    String payslipMonth = scanner.nextLine();
-                    AttendanceConfig.calculateWorkHours(String.valueOf(userID), payslipMonth);
+                            "Enter end date: (MM/DD/YYYY)");
+                    String attendanceEndDate = scanner.nextLine();
+                    AttendanceConfig.calculateWorkHours(String.valueOf(userID), attendanceStartDate, attendanceEndDate);
+                    
+                    //ensure date input are parseable.
+                    LocalDate attendanceStartDateFormat = LocalDate.parse(attendanceStartDate, TimeVariablesFormat.DATE_FORMAT);
+                    LocalDate attendanceEndDateFormat = LocalDate.parse(attendanceEndDate, TimeVariablesFormat.DATE_FORMAT);
 
-                    double late = PayrollConfig.lateDeduction(emp, AttendanceConfig.totalLateMinutes);
-                    double over = PayrollConfig.overtimeAddition(emp, AttendanceConfig.totalOvertimeMinutes);
-                    double sss = PayrollConfig.sssDeduction(emp);
-                    double pagibig = PayrollConfig.pagibigDeduction(emp);
-                    double philhealth = PayrollConfig.philhealthDeduction(emp);
-                    double total = PayrollConfig.totalCompensation(emp, over);
-                    double taxable = PayrollConfig.taxableIncome(emp, over, late, sss, pagibig, philhealth);
-                    double tax = PayrollConfig.tax(emp, taxable);
-                    double deductions = late + sss + pagibig + philhealth + tax;
-                    double net = PayrollConfig.netPay(total, deductions);
-
-                    System.out.println("\n--- Payslip ---");
-                    System.out.println("Employee Name: " + emp.firstName + " " + emp.lastName);
-                    System.out.println("Employee ID: " + emp.employeeID);
-                    System.out.println("Position: " + emp.position);
-                    System.out.println("\n---Government Information---");
-                    System.out.println("SSS: " + emp.sssNumber);
-                    System.out.println("Philhealth: " + emp.philhealthNumber);
-                    System.out.println("TIN: " + emp.tinNumber);
-                    System.out.println("Pag-IBIG: " + emp.pagibigNumber);
-                    System.out.println("\n---Compensation---");
-                    System.out.println("Basic Salary: P" + emp.basicSalary);
-                    System.out.println("Overtime Pay: P" + over);
-                    System.out.println("Rice Subsidy: P" + emp.riceSubsidy + ".0");
-                    System.out.println("Phone Allowance: P" + emp.phoneAllowance + ".0");
-                    System.out.println("Clothing Allowance: P" + emp.clothingAllowance + ".0");
-                    System.out.println("\n---Deductions---");
-                    System.out.println("Late Deduction: P" + late);
-                    System.out.println("SSS: P" + sss);
-                    System.out.println("Pag-IBIG: P" + pagibig);
-                    System.out.println("Philhealth: P" + philhealth);
-                    System.out.println("Tax: P" + tax);
-
-                    System.out.println("\nNet Pay: P" + net);
+                    //ensure date input does not exceed 7 days.
+                    if (ChronoUnit.DAYS.between(attendanceStartDateFormat, attendanceEndDateFormat) < 8) {
+                        System.out.println("Total Hours: " + PayrollConfig.round(AttendanceConfig.totalWorkMinutes / 60) + " hours");
+                        System.out.println("Late: " + PayrollConfig.round(AttendanceConfig.totalLateMinutes / 60) + " hours");
+                        System.out.println("Overtime: " + PayrollConfig.round(AttendanceConfig.totalOvertimeMinutes / 60) + " hours");
+                    }
+                    else {
+                        System.out.println("Date range must not exceed 7 days.");
+                    }
                     break;
-                case "F":
+                case "D": //Viewing weekly payslip information
+                    System.out.println(
+                            "Enter start date: (MM/DD/YYYY)");
+                    String paySlipStartDate = scanner.nextLine();
+                    System.out.println(
+                            "Enter end date: (MM/DD/YYYY)");
+                    String payslipEndDate = scanner.nextLine();
+                    AttendanceConfig.calculateWorkHours(String.valueOf(userID), paySlipStartDate, payslipEndDate);
+
+                    //ensure date input are parseable.
+                    LocalDate paySlipStartDateFormat = LocalDate.parse(paySlipStartDate, TimeVariablesFormat.DATE_FORMAT);
+                    LocalDate payslipEndDateFormat = LocalDate.parse(payslipEndDate, TimeVariablesFormat.DATE_FORMAT);
+
+                    //ensure date input does not exceed 7 days.
+                    if (ChronoUnit.DAYS.between(paySlipStartDateFormat, payslipEndDateFormat) < 8) {
+                        DisplayView payslipView = new DisplayView(emp);
+                        payslipView.paySlipView();
+                    }
+                    else {
+                        System.out.println("Date range must not exceed 7 days.");
+                    }
+                    break;
+                case "F": //Exit the program
                     System.out.println("Logging out. Goodbye!");
                     break;
                 default:
@@ -90,7 +89,7 @@ public class Main {
             }
         }
     }
-
+//Simulate login wall. No access unless employee ID matches one in the database
     static int login() {
         int id = 0;
         while (true) {

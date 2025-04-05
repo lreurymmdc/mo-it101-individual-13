@@ -3,6 +3,7 @@ package util;
 import java.time.format.DateTimeFormatter;
 import java.time.LocalTime;
 
+//Ensure time data are parseable.
 public class TimeVariablesFormat {
     public static final DateTimeFormatter TIME_FORMAT = DateTimeFormatter.ofPattern("HH:mm");
     public static final DateTimeFormatter DATE_FORMAT = DateTimeFormatter.ofPattern("MM/dd/yyyy");
