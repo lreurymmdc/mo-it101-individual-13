@@ -5,10 +5,9 @@ How it works:
 2. It will then lookup the employee database with the Employee ID as the search key; If it's found, the system will log in the employee, If not, it will direct users to contact admin.
 3. Once logged in, employees can perform the following actions:
     - Punch Clock – Clock in or out to record daily attendance.
-    - View My Profile – Access basic, government, and employment details. The system retrieves this data from the database (hashmap) using the logged employee ID as the search key.
-    - View My Attendance – Retrieves monthly attendance records. The system prompts employees to select a month before displaying the data.
-    - View My Payslip - Retrieves monthly pay records. The system prompts employees to select a month before displaying the data.
-    - Admin Tools - Allow admin users to perform advanced system functions e.g. searching and update employee information, retrieving an employee's payslip information, and approving payroll.
-
+    - View Profile – Access basic, government, and employment details. The system retrieves this data from the database (hashmap) using the logged employee ID as the search key.
+    - View Attendance – Retrieves weekly attendance records. The system prompts employees to select a starting date and an end date before displaying the data.
+    - View Payslip - Retrieves weekly pay records. The system prompts employees to select a starting date and an end date before displaying the data.
+      
 Other Notes:
 - I've utilized two types of data sources: Hashmap for Employee Data and a CSV file for Attendance to try two different methods of accessing and retrieving data in Java.
