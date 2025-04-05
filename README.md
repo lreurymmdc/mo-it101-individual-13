@@ -9,6 +9,6 @@ How it works:
     - View Attendance – Retrieves weekly attendance records. The system prompts employees to select a starting date and an end date before displaying the data.
     - View Payslip - Retrieves weekly pay records. The system prompts employees to select a starting date and an end date before displaying the data.
       
-Updates:
+Updates (As of 4/5/2025):
 - Revised code calculation to compute weekly payroll information.
 - added Payslip.java and Display.java to better organize and reduce code cluttering in the Main.java file. 
