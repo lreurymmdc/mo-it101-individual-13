@@ -12,3 +12,7 @@ How it works:
 Updates (As of 4/5/2025):
 - Revised code calculation to compute weekly payroll information.
 - added Payslip.java and DisplayView.java to better organize and reduce code cluttering in the Main.java file. 
+
+Updates (As of 4/6/2025)
+- Break codes into different java class for better readability and reduce code works in Main.java
+- Renamed folders and files for readability.
