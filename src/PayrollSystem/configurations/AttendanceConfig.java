@@ -1,4 +1,4 @@
-package service;
+package configurations;
 
 import util.TimeVariablesFormat;
 import java.nio.file.*;
@@ -12,10 +12,7 @@ public class AttendanceConfig {
 
 //Calculate working hours of an Employee based on a given starting date and end date.
     public static void calculateWorkHours(String employeeID, String startDate, String endDate) {
-        totalLateMinutes = 0;
-        totalWorkMinutes = 0;
-        totalOvertimeMinutes = 0;
-
+        
         try (BufferedReader br = Files.newBufferedReader(Paths.get(TimeVariablesFormat.ATTENDANCE_FILE))) {
 
             //Convert string input to LocalDate parseable data type.

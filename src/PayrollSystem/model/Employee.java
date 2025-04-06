@@ -30,4 +30,13 @@ public class Employee {
         this.clothingAllowance = clothingAllowance;
         this.hourlyRate = hourlyRate;
     }
+    public int getId() {
+        return employeeID;
+    }
+    public String getFullname() {
+        return firstName + " " + lastName;
+    }
+    public String getBirthday() {
+        return birthday;
+    }
 }

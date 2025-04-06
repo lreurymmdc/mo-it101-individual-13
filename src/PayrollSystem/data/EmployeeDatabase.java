@@ -5,18 +5,7 @@ import java.util.*;
 
 public class EmployeeDatabase {
         public static Map<Integer, Employee> employeeMap = new HashMap<>();
-
-        public static void addEmployee(Employee emp) {
-                employeeMap.put(emp.employeeID, emp);
-        }
-
-        public static Employee getEmployee(int id) {
-                return employeeMap.get(id);
-        }
-
-        public static boolean containsEmployee(int id) {
-                return employeeMap.containsKey(id);
-        }
+        
 
         // Employee - Sample Dataset
         static {
@@ -191,6 +180,9 @@ public class EmployeeDatabase {
                 for (Employee emp : employees) {
                         employeeMap.put(emp.employeeID, emp);
                 }
+        }
+        public static Employee getEmployee(int id) {
+                return employeeMap.get(id);
         }
 
 }

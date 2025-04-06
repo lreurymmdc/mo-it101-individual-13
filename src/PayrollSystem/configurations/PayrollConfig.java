@@ -1,4 +1,4 @@
-package service;
+package configurations;
 
 import model.Employee;
 import java.math.*;

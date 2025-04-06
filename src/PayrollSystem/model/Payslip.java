@@ -1,6 +1,7 @@
 package model;
-import service.AttendanceConfig;
-import service.PayrollConfig;
+
+import configurations.AttendanceConfig;
+import configurations.PayrollConfig;
 
 
 public class Payslip {
