@@ -33,19 +33,19 @@ src
 </pre>
 <h2>Glossary:</h2>
 <ul>
-<li><strong>Main.java:</strong> Initializes the program. It keeps the system running until the user chooses to exit.</li>
-<li><strong>AttendanceConfig.java: </strong>For attendance-related calculations.</li>
-<li><strong>PayrollConfig.java:</strong> For payroll-related calculations.</li>
-<li><strong>EmployeeDatabase.java:</strong> Stores motorPH employee information inside a hashmap.</li>
-<li><strong>Attendance.java: </strong>Attendance-related features i.e. punch clock and generating attendance report.</li>
-<li><strong>Login.java: </strong>Prompts users to enter a valid employee ID before running the system.</li>
-<li><strong>Menu.java: </strong>Prompts users with selections of actions that they can do inside once logged in.</li>
-<li><strong>Payroll.java: </strong>Payroll-related features i.e. payslip generation.</li>
-<li><strong>Employee.java:</strong> Blueprint of a single employee user.&nbsp;</li>
-<li><strong>Payslip.java: </strong>Blueprint of payslip information.</li>
-<li><strong>User.java:</strong> Isolate a single set of employee information based on their logged employee ID.</li>
-<li><strong>Display.java: </strong>Contains the Information architecture of generated reports i.e. employee profile, payslip, and attendance.</li>
-<li><strong>TimeVariablesFormat.java:</strong> Ensure time data are parseable.</li>
+<li><code>Main.java:</code> Initializes the program. It keeps the system running until the user chooses to exit.</li>
+<li><code>AttendanceConfig.java: </code>For attendance-related calculations.</li>
+<li><code>PayrollConfig.java:</code> For payroll-related calculations.</li>
+<li><code>EmployeeDatabase.java:</code> Stores motorPH employee information inside a hashmap.</li>
+<li><code>Attendance.java: </code>Attendance-related features i.e. punch clock and generating attendance report.</li>
+<li><code>Login.java: </code>Prompts users to enter a valid employee ID before running the system.</li>
+<li><code>Menu.java: </code>Prompts users with selections of actions that they can do inside once logged in.</li>
+<li><code>Payroll.java: </code>Payroll-related features i.e. payslip generation.</li>
+<li><code>Employee.java:</code> Blueprint of a single employee user.&nbsp;</li>
+<li><code>Payslip.java: </code>Blueprint of payslip information.</li>
+<li><code>User.java:</code> Isolate a single set of employee information based on their logged employee ID.</li>
+<li><code>Display.java: </code>Contains the Information architecture of generated reports i.e. employee profile, payslip, and attendance.</li>
+<li><code>TimeVariablesFormat.java:</code> Ensure time data are parseable.</li>
 </ul>
 <h2>Guide on how the system works.</h2>
 <p>When users run the program, they are greeted and prompted to enter their employee User ID.</p>
